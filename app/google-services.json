@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1085825766011",
+    "project_id": "sudokuapp-cbafa",
+    "storage_bucket": "sudokuapp-cbafa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1085825766011:android:8e444540cdacc318a448de",
+        "android_client_info": {
+          "package_name": "com.example.sudokuapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpdtzhKImz7OXGoYXYSwQZwXpNseM2p-E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

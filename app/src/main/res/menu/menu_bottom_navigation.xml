@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/SudokuFragmentIcon"
+        android:enabled="true"
+        android:icon="@drawable/baseline_videogame_asset_24"
+        android:title="Sudoku"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/DailyFragmentIcon"
+        android:enabled="true"
+        android:icon="@drawable/baseline_av_timer_24"
+        android:title="Daily Puzzle"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/LeaderboardFragmentIcon"
+        android:enabled="true"
+        android:icon="@drawable/baseline_leaderboard_24"
+        android:title="Leaderboard"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/AccountFragmentIcon"
+        android:enabled="true"
+        android:icon="@drawable/baseline_person_24"
+        android:title="Account"
+        app:showAsAction="ifRoom" />
+
+</menu>
