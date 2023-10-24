@@ -3,8 +3,8 @@ package com.example.sudokuapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.annotation.FloatRange
 import androidx.fragment.app.Fragment
+import com.example.sudokuapp.view.SudokuGameFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
