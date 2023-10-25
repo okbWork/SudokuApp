@@ -9,4 +9,5 @@ data class SudokuPlayerModel(
     val minMoves: Int? = null,
     var highScore: Int? = null,
     var dailyStreak: Int? = null,
+    var dailyMinTime: Int? = null,
     var lastDay: Date? = null)
