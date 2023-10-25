@@ -1,5 +1,6 @@
 package com.example.sudokuapp
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 
 
@@ -22,9 +23,11 @@ class SudokuGame {
     }
 
     fun handleInput(number: Int) {
+        Log.d("start input", "adding val ${number}")
         if (selectedRow == -1 || selectedCol == -1) return
 
         board.getCell(selectedRow, selectedCol).value = number
+        Log.d("start input", "method completed.new val is ${board.getCell(selectedRow, selectedCol).value}")
         cellsLiveData.postValue(board.cells)
     }
 

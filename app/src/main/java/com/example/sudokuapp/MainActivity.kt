@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
                 puzCount += 1
         */
         val myRef = database.getReference("Puzzles")
-        for(i in 0..0){
+        for(i in 0..<0){
             println("Adding puzzle")
             Log.d("Update: ", "Attempting Add")
             gameGenerator = SudokuGameGenerator()
