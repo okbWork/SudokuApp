@@ -12,7 +12,7 @@ private val MAX_DIGIT_INDEX = 8
 private val BOX_SIZE = 3
 
 enum class Level(val numberOfProvidedDigits: Int) {
-    JUNIOR(25),
+    JUNIOR(80),
     MID(20),
     SENIOR(17);
 }

@@ -5,9 +5,133 @@
     android:layout_height="match_parent"
     tools:context=".DailySudokuFragment">
 
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Daily Challenge Fragment" />
+        tools:context=".view.SudokuGameFragment">
+
+        <TextView
+            android:id="@+id/timeTV"
+            android:layout_width="275dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/sudokuBoardViewD"
+            android:layout_alignParentEnd="true"
+            android:padding="10dp"
+            android:text="00:00:00"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/difficultyTab"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/sudokuBoardViewD"
+            android:padding="10dp"
+            android:text="EASY"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="45sp"
+            android:visibility="invisible"/>
+
+        <com.example.sudokuapp.SudokuBoardView
+            android:id="@+id/sudokuBoardViewD"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/buttonsLayoutD"
+            />
+
+        <GridLayout android:layout_height="wrap_content"
+            android:id="@+id/buttonsLayoutD"
+            android:layout_width="wrap_content"
+            android:rowCount="4"
+            android:columnCount="3"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            >
+
+            <Button
+                android:id="@+id/oneButtonD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:layout_row="0"
+                android:layout_column="0"/>
+
+            <Button
+                android:id="@+id/twoButtonD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2"
+                android:layout_row="0"
+                android:layout_column="1"/>
+
+            <Button
+                android:id="@+id/threeButtonD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3"
+                android:layout_row="0"
+                android:layout_column="2"/>
+
+            <Button
+                android:id="@+id/fourButtonD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4"
+                android:layout_row="1"
+                android:layout_column="0"/>
+
+            <Button
+                android:id="@+id/fiveButtonD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5"
+                android:layout_row="1"
+                android:layout_column="1"/>
+
+            <Button
+                android:id="@+id/sixButtonD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6"
+                android:layout_row="1"
+                android:layout_column="2"/>
+
+            <Button
+                android:id="@+id/sevenButtonD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="7"
+                android:layout_row="2"
+                android:layout_column="0"/>
+
+            <Button
+                android:id="@+id/eightButtonD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8"
+                android:layout_row="2"
+                android:layout_column="1"/>
+
+            <Button
+                android:id="@+id/nineButtonD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9"
+                android:layout_row="2"
+                android:layout_column="2"/>
+
+            <ImageButton
+                android:id="@+id/deleteButtonD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_row="3"
+                android:layout_column="2"
+                android:src="@drawable/baseline_keyboard_backspace_24"/>
+        </GridLayout>
+
+    </RelativeLayout>
+
 
 </FrameLayout>
