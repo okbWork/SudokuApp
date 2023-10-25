@@ -50,7 +50,7 @@ class DailySudokuFragment : Fragment() {
             Log.d("Update: ", "Puzzle Built")
             dailyPuzzle = gameGenerator.grid
             dailySolution = gameGenerator.solution
-            val puzzle = SudokuGameModel(
+            val puzzle = DailySudokuGameModel(
                 today,
                 lc.gridToLine(gameGenerator.grid),
                 lc.gridToLine(gameGenerator.solution)
