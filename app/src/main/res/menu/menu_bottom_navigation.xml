@@ -11,7 +11,7 @@
         android:id="@+id/DailyFragmentIcon"
         android:enabled="true"
         android:icon="@drawable/baseline_av_timer_24"
-        android:title="Daily Puzzle"
+        android:title="Daily Sudoku"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/LeaderboardFragmentIcon"

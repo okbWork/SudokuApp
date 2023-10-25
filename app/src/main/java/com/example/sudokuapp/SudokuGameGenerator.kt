@@ -1,6 +1,6 @@
 package com.example.sudokuapp
 
-import kotlin.math.min
+import android.util.Log
 import kotlin.random.Random
 
 private val GRID_SIZE = 9
@@ -11,8 +11,13 @@ private val MIN_DIGIT_INDEX = 0
 private val MAX_DIGIT_INDEX = 8
 private val BOX_SIZE = 3
 
-class Solver(){
+enum class Level(val numberOfProvidedDigits: Int) {
+    JUNIOR(25),
+    MID(20),
+    SENIOR(17);
+}
 
+internal object Solver {
 
     lateinit var grid: Array<IntArray>
 
@@ -45,7 +50,7 @@ class Solver(){
 
     private fun getAvailableDigits(row: Int, column: Int) : Iterable<Int> {
         val digitsRange = MIN_DIGIT_VALUE..MAX_DIGIT_VALUE
-        var availableDigits = mutableSetOf<Int>()
+        var availableDigits = mutableListOf<Int>()
         availableDigits.addAll(digitsRange)
 
         truncateByDigitsAlreadyUsedInRow(availableDigits, row)
@@ -59,7 +64,7 @@ class Solver(){
         return availableDigits.asIterable()
     }
 
-    private fun truncateByDigitsAlreadyUsedInRow(availableDigits: MutableSet<Int>, row: Int) {
+    private fun truncateByDigitsAlreadyUsedInRow(availableDigits: MutableList<Int>, row: Int) {
         for (i in MIN_DIGIT_INDEX..MAX_DIGIT_INDEX) {
             if (grid[row][i] != 0) {
                 availableDigits.remove(grid[row][i])
@@ -67,7 +72,7 @@ class Solver(){
         }
     }
 
-    private fun truncateByDigitsAlreadyUsedInColumn(availableDigits: MutableSet<Int>, column: Int) {
+    private fun truncateByDigitsAlreadyUsedInColumn(availableDigits: MutableList<Int>, column: Int) {
         for (i in MIN_DIGIT_INDEX..MAX_DIGIT_INDEX) {
             if (grid[i][column] != 0) {
                 availableDigits.remove(grid[i][column])
@@ -75,7 +80,7 @@ class Solver(){
         }
     }
 
-    private fun truncateByDigitsAlreadyUsedInBox(availableDigits: MutableSet<Int>, row: Int, column: Int) {
+    private fun truncateByDigitsAlreadyUsedInBox(availableDigits: MutableList<Int>, row: Int, column: Int) {
         val rowStart = findBoxStart(row)
         val rowEnd = findBoxEnd(rowStart)
         val columnStart = findBoxStart(column)
@@ -94,13 +99,20 @@ class Solver(){
 
     private fun findBoxEnd(index: Int) = index + BOX_SIZE - 1
 }
-class SudokuGameGenerator(missingBlocks: Int? = 56) {
-    private val missingBlocks = missingBlocks
-    private val grid = Array(9) { IntArray(9) {0} }
-    private var solution = grid.clone()
+class SudokuGameGenerator(level: Level = Level.JUNIOR) {
+
+    val grid = Array(GRID_SIZE) { IntArray(GRID_SIZE) {0} }
+    var solution = Array(GRID_SIZE) { IntArray(GRID_SIZE) {0} }
+
+    private val level: Level = level ?: Level.JUNIOR
+
     init {
         fillGrid()
+        println(grid)
+        println(solution)
+
     }
+    private fun Array<IntArray>.copy() = Array(size) { get(it).clone() }
 
     fun printGrid() {
         for (i in 0 until GRID_SIZE) {
@@ -114,9 +126,12 @@ class SudokuGameGenerator(missingBlocks: Int? = 56) {
 
     private fun fillGrid() {
         fillDiagonalBoxes()
+        Log.d("Update: ", "Diags Filled")
         fillRemaining(0, GRID_SIZE_SQUARE_ROOT)
-        solution = grid.clone()
+        Log.d("Update: ", "Filled Remaining")
+        solution = grid.copy()
         removeDigits()
+        Log.d("Update: ", "Removing Digits")
     }
 
     private fun fillDiagonalBoxes() {
@@ -219,25 +234,34 @@ class SudokuGameGenerator(missingBlocks: Int? = 56) {
     }
 
     private fun removeDigits() {
-        var digitsToRemove = missingBlocks
+        var digitsToRemove = GRID_SIZE * GRID_SIZE - level.numberOfProvidedDigits
 
-        if (digitsToRemove != null) {
-            while (digitsToRemove > 0) {
-                val randomRow = generateRandomInt(MIN_DIGIT_INDEX, MAX_DIGIT_INDEX)
-                val randomColumn = generateRandomInt(MIN_DIGIT_INDEX, MAX_DIGIT_INDEX)
+        while (digitsToRemove > 0) {
+            val randomRow = generateRandomInt(MIN_DIGIT_INDEX, MAX_DIGIT_INDEX)
+            val randomColumn = generateRandomInt(MIN_DIGIT_INDEX, MAX_DIGIT_INDEX)
 
-                if (grid[randomRow][randomColumn] != 0) {
-                    val digitToRemove = grid[randomRow][randomColumn]
-                    grid[randomRow][randomColumn] = 0
-                    var s = Solver()
-                    if (s.solvable(grid)) {
-                        grid[randomRow][randomColumn] = digitToRemove
-                    } else {
-                        digitsToRemove --
-                    }
+            if (grid[randomRow][randomColumn] != 0) {
+                val digitToRemove = grid[randomRow][randomColumn]
+                grid[randomRow][randomColumn] = 0
+                if (!Solver.solvable(grid)) {
+                    grid[randomRow][randomColumn] = digitToRemove
+                } else {
+                    digitsToRemove --
                 }
             }
         }
     }
 
+    class Builder {
+        private lateinit var level: Level
+
+        fun setLevel(level: Level) : Builder {
+            this.level = level
+            return this
+        }
+
+        fun build() : SudokuGameGenerator {
+            return SudokuGameGenerator(this.level)
+        }
+    }
 }

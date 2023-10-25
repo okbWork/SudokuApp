@@ -1,13 +1,15 @@
 package com.example.sudokuapp
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.annotation.FloatRange
+import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
@@ -19,6 +21,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var gameGenerator: SudokuGameGenerator
+    val puzzleMax = 100
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -29,6 +33,56 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
+        var puzCount: Long = 0
+
+        println("Update: Adding Puzzles")
+        val database= Firebase.database
+        /*
+        val db = Firebase.firestore
+        val query = db.collection("Puzzles")
+        val countQuery = query.count()
+        countQuery.get(AggregateSource.SERVER).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // Count fetched successfully
+                val snapshot = task.result
+                Log.d(ContentValues.TAG, "Count: ${snapshot.count}")
+                puzCount = snapshot.count
+            } else {
+                Log.d(ContentValues.TAG, "Count failed: ", task.getException())
+            }
+        }
+
+            Log.d("Update: ", "Attempting Add")
+            gameGenerator = SudokuGameGenerator()
+            val puzzleId = myRef.push().key!!
+            val puzzle = SudokuGameModel(puzzleId, gameGenerator.grid, gameGenerator.solution)
+            myRef.child(puzzleId).setValue(puzzle)
+                .addOnSuccessListener{
+                    Log.d("Update: ", "Puzzle added")
+                }
+                puzCount += 1
+        */
+        val myRef = database.getReference("Puzzles")
+        for(i in 0..2){
+            println("Adding puzzle")
+            Log.d("Update: ", "Attempting Add")
+            gameGenerator = SudokuGameGenerator()
+            Log.d("Update: ", "Puzzle Built")
+            val puzzleId = myRef.push().key!!
+            val lc = LineConverter()
+            val puzzle = SudokuGameModel(puzzleId, lc.gridToLine(gameGenerator.grid), lc.gridToLine(gameGenerator.solution))
+            myRef.child(puzzleId).setValue(puzzle)
+                .addOnSuccessListener{
+                    Log.d("Update: ", "Puzzle added")
+                }
+            puzCount += 1
+        }
+        Toast.makeText(this, "Puzzle Adding Complete", Toast.LENGTH_SHORT).show()
+
+
+
+
+
         val bottomNavigationBar: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigationBar.selectedItemId = R.id.LeaderboardFragmentIcon
         replaceFragment(LeaderboardFragment())
@@ -38,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.SudokuFragmentIcon -> fragment = SudokuGameFragment()
                 R.id.AccountFragmentIcon -> fragment = AccountFragment()
                 R.id.LeaderboardFragmentIcon -> fragment = LeaderboardFragment()
-                R.id.DailyFragmentIcon -> fragment = DailyChallengeFragment()
+                R.id.DailyFragmentIcon -> fragment = DailySudokuFragment()
             }
             replaceFragment(fragment)
             true
