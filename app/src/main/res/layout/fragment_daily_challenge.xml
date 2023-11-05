@@ -5,11 +5,34 @@
     android:layout_height="match_parent"
     tools:context=".DailySudokuFragment">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".view.SudokuGameFragment">
+
+        <TextView
+            android:id="@+id/timeTV"
+            android:layout_width="275dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/sudokuBoardViewD"
+            android:layout_alignParentEnd="true"
+            android:padding="10dp"
+            android:text="00:00:00"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/difficultyTab"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/sudokuBoardViewD"
+            android:padding="10dp"
+            android:text="EASY"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="45sp"
+            android:visibility="invisible"/>
 
         <com.example.sudokuapp.SudokuBoardView
             android:id="@+id/sudokuBoardViewD"

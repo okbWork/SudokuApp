@@ -1,13 +1,10 @@
 package com.example.sudokuapp
 
-import java.util.Date
-
 data class SudokuPlayerModel(
     var userEmail:String? = null,
     var userId: String? = null,
     var minTime: Int? = null,
-    val minMoves: Int? = null,
-    var highScore: Int? = null,
-    var dailyStreak: Int? = null,
-    var dailyMinTime: Int? = null,
-    var lastDay: Date? = null)
+    var minMoves: Int? = null,
+    var highScore: Int? = 0,
+    var dailyStreak: Int? = 0,
+    var lastDay: String? = "1970-10-10")

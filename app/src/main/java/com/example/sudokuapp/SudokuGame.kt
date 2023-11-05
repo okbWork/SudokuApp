@@ -21,6 +21,7 @@ class SudokuGame(
         for(cell in cells){
             if(cell.value != 0){
                 cell.isStartingCell = true
+                Log.i("startingCell","isStarter")
             }
         }
         board = Board(9, cells)
@@ -30,10 +31,12 @@ class SudokuGame(
     }
     fun isFinished(): Boolean{
         for(i in 0..80){
-            if (board.cells[i].value== solution?.get(i) ?: 10){
+            if (board.cells[i].value!= solution?.get(i) ?: 10){
                 return false
             }
         }
+
+        Log.d("Game", "Game Completed")
         return true
     }
     fun start(){
@@ -45,6 +48,11 @@ class SudokuGame(
         board = Board(9, cells)
 
         selectedCellLiveData.postValue(Pair(selectedRow, selectedCol))
+        for(cell in board.cells){
+            if(cell.value != 0){
+                cell.isStartingCell = true
+            }
+        }
         cellsLiveData.postValue(board.cells)
     }
 
