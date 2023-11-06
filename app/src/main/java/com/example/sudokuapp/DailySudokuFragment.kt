@@ -26,6 +26,7 @@ class DailySudokuFragment : Fragment() ,SudokuBoardView.OnTouchListener {
         private lateinit var auth: FirebaseAuth
         private lateinit var numberButtons: List<Button>
         var seconds = 0
+        var moves = 0
         var running = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -164,16 +165,16 @@ class DailySudokuFragment : Fragment() ,SudokuBoardView.OnTouchListener {
 
         buttons.forEachIndexed { index, button ->
             button.setOnClickListener {
+                moves += 1
                 viewModel.sudokuGame.handleInput(index + 1)
                 if( viewModel.sudokuGame.isFinished()){
                     stopTimer()
                     auth = Firebase.auth
-                    val dailyLeaderboardEntryModel = DailyLeaderboardEntryModel(auth.currentUser?.uid, seconds)
+                    val leaderboardEntryModel = LeaderboardEntryModel(auth.currentUser?.uid, seconds, moves)
                     val playerModel = SudokuPlayerModel()
                     val puzzleLeaderBoard = database.getReference("DailyLeaderboard")
-                    val dailyPuzzleQ =
-                        auth.currentUser?.let { it1 ->
-                            puzzleLeaderBoard.child(today).child(it1.uid).setValue(dailyLeaderboardEntryModel).addOnSuccessListener {
+                    auth.currentUser?.let { it1 ->
+                            puzzleLeaderBoard.child(today).child(it1.uid).setValue(leaderboardEntryModel).addOnSuccessListener {
                                 Log.d("Update: ", "Score Added to Leaderboard")
                             }
                         }

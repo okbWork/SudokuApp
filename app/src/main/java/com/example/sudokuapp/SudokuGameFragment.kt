@@ -1,22 +1,33 @@
+
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.sudokuapp.Cell
+import com.example.sudokuapp.LeaderboardEntryModel
 import com.example.sudokuapp.LineConverter
 import com.example.sudokuapp.PlaySudokuViewModel
 import com.example.sudokuapp.R
 import com.example.sudokuapp.SudokuBoardView
 import com.example.sudokuapp.SudokuGameGenerator
 import com.example.sudokuapp.SudokuGameModel
+import com.example.sudokuapp.SudokuPlayerModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import java.time.LocalDate
+import java.util.Locale
+import kotlin.math.min
 import kotlin.random.Random
 
 class SudokuGameFragment : Fragment(), SudokuBoardView.OnTouchListener {
@@ -24,16 +35,69 @@ class SudokuGameFragment : Fragment(), SudokuBoardView.OnTouchListener {
     private lateinit var numberButtons: List<Button>
 
     private lateinit var auth: FirebaseAuth
+    var seconds = 0
+    var moves = 0
+    var running = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_daily_challenge, container, false)
+        fun runTimer() {
+
+            // Get the text view.
+            val timeView = view.findViewById(
+                R.id.timeTV
+            ) as TextView
+
+            // Creates a new Handler
+            val handler = Handler()
+
+            // Call the post() method,
+            // passing in a new Runnable.
+            // The post() method processes
+            // code without a delay,
+            // so the code in the Runnable
+            // will run almost immediately.
+            handler.post(object : Runnable {
+                override fun run() {
+                    val hours: Int = seconds / 3600
+                    val minutes: Int = seconds % 3600 / 60
+                    val secs: Int = seconds % 60
+
+                    // Format the seconds into hours, minutes,
+                    // and seconds.
+                    val time = String.format(
+                        Locale.getDefault(),
+                        "%d:%02d:%02d", hours,
+                        minutes, secs
+                    )
+
+                    // Set the text view text.
+                    timeView.text = time
+
+                    // If running is true, increment the
+                    // seconds variable.
+                    if (running){
+                        seconds++
+                        handler.postDelayed(this, 1000)
+                    }
+
+                    // Post the code again
+                    // with a delay of 1 second.
+                }
+            })
+        }
+        fun stopTimer(){
+            running = false
+        }
         // Inflate the layout for this fragment
+        val today = LocalDate.now().toString()
         var dailyPuzzle: Array<IntArray> = Array(9) { IntArray(9) {0} }
         var dailySolution: Array<IntArray> = Array(9) { IntArray(9) {0}}
         val database = Firebase.database
@@ -87,6 +151,7 @@ class SudokuGameFragment : Fragment(), SudokuBoardView.OnTouchListener {
             viewModel.sudokuGame.puzzle = lc.gridToLine(dailyPuzzle)
             viewModel.sudokuGame.solution = lc.gridToLine(dailySolution)
             viewModel.sudokuGame.start()
+            runTimer()
             viewModel.sudokuGame.selectedCellLiveData.observe(viewLifecycleOwner, Observer { updateSelectedCellUI(it) })
             viewModel.sudokuGame.cellsLiveData.observe(viewLifecycleOwner, Observer { updateCells(it) })
         }.addOnFailureListener{
@@ -115,9 +180,60 @@ class SudokuGameFragment : Fragment(), SudokuBoardView.OnTouchListener {
 
         buttons.forEachIndexed { index, button ->
             button.setOnClickListener {
+                moves += 1
                 viewModel.sudokuGame.handleInput(index + 1)
                 if( viewModel.sudokuGame.isFinished()){
-                    //TODO clock
+                    stopTimer()
+                    auth = Firebase.auth
+                    var minS = seconds
+                    var minM = moves
+                    val playerModel = SudokuPlayerModel()
+                    val puzzleLeaderBoard = database.getReference("Leaderboard")
+                    val updateUserRef = database.getReference("Users")
+                    val currentUser = auth.currentUser?.let { it1 -> updateUserRef.child(it1.uid).get() }
+                    currentUser?.addOnSuccessListener { d ->
+                        if(d.getValue(SudokuPlayerModel::class.java) != null){
+                            Log.i("firebase", "Found Player in Users")
+                            var player = d.getValue(SudokuPlayerModel::class.java)
+                            if (player != null) {
+                                playerModel.dailyStreak = player.dailyStreak
+                                playerModel.highScore = player.highScore
+                                playerModel.minMoves = min(moves, player.minMoves!!)
+                                playerModel.minTime = min(seconds, player.minTime!!)
+                                playerModel.userEmail = player.userEmail
+                                playerModel.userId = player.userId
+                                playerModel.highScore = player.highScore
+                                playerModel.lastDay = player.lastDay
+                                minS = playerModel.minTime!!
+                            }
+
+                        }else{
+                            playerModel.dailyStreak = 1
+                            playerModel.highScore = 0
+                            playerModel.minMoves = moves
+                            playerModel.minTime = seconds
+                            playerModel.userEmail = auth.currentUser?.email
+                            playerModel.userId = auth.currentUser?.uid
+                            playerModel.highScore = 0
+                            playerModel.lastDay = "1970-10-10"
+                            Log.e("firebase", "No User found in Users")
+                        }
+                        auth.currentUser?.let { it1 ->
+                            updateUserRef.child(it1.uid).setValue(playerModel)
+                                .addOnSuccessListener {
+                                    Log.d("Update: ", "User Updated After Daily Entry")
+                                }
+                        }
+                    }
+                    val leaderboardEntryModel = LeaderboardEntryModel(auth.currentUser?.uid, minS, minM)
+                    auth.currentUser?.let { it1 ->
+                        puzzleLeaderBoard.child(it1.uid).setValue(leaderboardEntryModel).addOnSuccessListener {
+                            Log.d("Update: ", "Score Added to Leaderboard")
+                        }
+                    }
+                    buttons.forEachIndexed { _, button ->
+                        button.setOnClickListener {}
+                    }
                 }
             }
         }
