@@ -8,6 +8,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?android:colorBackground"
         tools:context=".view.SudokuGameFragment">
 
         <TextView
@@ -19,7 +20,7 @@
             android:padding="10dp"
             android:text="00:00:00"
             android:textAlignment="center"
-            android:textColor="@color/black"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="30sp" />
 
         <TextView
@@ -30,7 +31,7 @@
             android:padding="10dp"
             android:text="EASY"
             android:textAlignment="center"
-            android:textColor="@color/black"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="45sp"
             android:visibility="invisible"/>
 

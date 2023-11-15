@@ -9,6 +9,7 @@ import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import com.google.android.material.color.MaterialColors
 import kotlin.math.min
 
 class SudokuBoardView(context: Context, attributeSet: AttributeSet) : View(context, attributeSet) {
@@ -40,6 +41,7 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet) : View(conte
     private val selectedCellPaint = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
         color = Color.parseColor("#6ead3a")
+        color = Color.parseColor("#1ebc73")
     }
 
     private val conflictingCellPaint = Paint().apply {
@@ -49,20 +51,20 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet) : View(conte
 
     private val textPaint = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
-        color = Color.BLACK
+        color = MaterialColors.getColor(this@SudokuBoardView, com.google.android.material.R.attr.colorPrimary)
         textSize = 44F
     }
 
     private val startingCellTextPaint = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
-        color = Color.BLUE
+        color = MaterialColors.getColor(this@SudokuBoardView, com.google.android.material.R.attr.colorOnPrimaryFixed)//Color.BLUE
         textSize = 44F
         typeface = Typeface.DEFAULT_BOLD
     }
 
     private val startingCellPaint = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
-        color = Color.parseColor("#acacac")
+        color = MaterialColors.getColor(this@SudokuBoardView, com.google.android.material.R.attr.colorTertiary) //Color.parseColor("#acacac")
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
