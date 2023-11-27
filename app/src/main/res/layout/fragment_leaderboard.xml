@@ -5,9 +5,87 @@
     android:layout_height="match_parent"
     tools:context=".LeaderboardFragment">
 
-    <TextView
+<!--    <TextView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:text="Leaderboard Fragment"-->
+<!--        android:layout_above="@id/entriesLayout"-->
+<!--        />-->
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Leaderboard Fragment" />
+        tools:context=".view.LeaderboardFragment">
+
+        <ScrollView
+            android:id="@+id/entriesLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <GridLayout
+                android:id="@+id/entriesGrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:useDefaultMargins="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_row="0"
+                    android:layout_column="0"
+                    android:text="Rank"
+                    android:textSize="24sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_row="0"
+                    android:layout_column="1"
+                    android:text="User"
+                    android:textSize="24sp"/>
+
+                <TextView
+                    android:id="@+id/statName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_row="0"
+                    android:layout_column="2"
+                    android:layout_gravity="right"
+                    android:text="Time"
+                    android:textSize="24sp"/>
+
+                <TextView
+                    android:id="@+id/rankTemplate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_row="1"
+                    android:layout_column="0"
+                    android:text="1"
+                    android:textSize="24sp"/>
+
+                <TextView
+                    android:id="@+id/uidTemplate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_row="1"
+                    android:layout_column="1"
+                    android:text="JohnDoe123"
+                    android:textSize="24sp"/>
+
+                <TextView
+                    android:id="@+id/statTemplate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_row="1"
+                    android:layout_column="2"
+                    android:layout_gravity="right"
+                    android:text="1:23:45"
+                    android:textSize="24sp"/>
+
+            </GridLayout>
+
+        </ScrollView>
+
+    </RelativeLayout>
 
 </FrameLayout>

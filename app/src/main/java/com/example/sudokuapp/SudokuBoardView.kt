@@ -40,7 +40,6 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet) : View(conte
 
     private val selectedCellPaint = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
-        color = Color.parseColor("#6ead3a")
         color = Color.parseColor("#1ebc73")
     }
 
