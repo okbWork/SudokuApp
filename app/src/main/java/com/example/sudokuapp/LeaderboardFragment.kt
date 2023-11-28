@@ -5,13 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.ArrayAdapter
+import android.widget.ListView
 
 
 class LeaderboardFragment : Fragment() {
 
-    // num. entries to push from database
-    private val leaderboardSize = 100
+    private val t3 = "\t\t\t"   // triple indent character, probably better way to do this
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,25 +24,19 @@ class LeaderboardFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_leaderboard, container, false)
 
-        // entry template
-        val rankView = view.findViewById(R.id.rankTemplate) as TextView
-        val uidView = view.findViewById(R.id.uidTemplate) as TextView
-        val statView = view.findViewById(R.id.statTemplate) as TextView
+        val arrayAdapter: ArrayAdapter<*>
+        val users = mutableListOf<String>()
 
-        // change to "time"/"moves" as needed
-        val statNameView = view.findViewById(R.id.statName) as TextView
-
-        fun pushEntry(uid: String, stat: String) {
-            // clone entry template views
+        fun appendScore(rank: String, stat: String, uid: String) {
+            users.add(rank + t3 + stat + t3 + uid)
         }
 
-        fun populate() {
-            // get list of users and stats from database
+        // get stats from database, call appendScore() in a loop to populate leaderboard
+        appendScore("1", "00:00:01", "JohnDoe123")
 
-            for (i in 1..leaderboardSize) {
-                // call pushEntry() until leaderboard filled
-            }
-        }
+        var mListView = view.findViewById<ListView>(R.id.leaderboardListView)
+        arrayAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_list_item_1, users)
+        mListView.adapter = arrayAdapter
 
         return view
     }
