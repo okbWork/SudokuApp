@@ -6,38 +6,53 @@
     android:layout_height="match_parent"
     tools:context=".AccountFragment"
     android:id="@+id/accountFragment">
-<androidx.cardview.widget.CardView
-    android:id="@+id/accountCard"
-        android:layout_width="300dp"
-        android:layout_height="400dp"
-        android:layout_marginHorizontal="55dp"
-        android:layout_marginVertical="150dp">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/accountProfilePicture"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginHorizontal="75dp"
-        android:layout_marginVertical="50dp"
-        android:background="@drawable/round_profile" />
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="250dp"
-        android:layout_height="75dp"
-        android:backgroundTint="@color/black"
-        android:layout_marginHorizontal="25dp"
-        android:layout_marginVertical="225dp"
-        android:text="LOG OUT"
-        android:textSize="20sp"/>
-    <Button
-        android:id="@+id/nukeAccountButton"
-        android:layout_width="250dp"
-        android:layout_height="75dp"
-        android:backgroundTint="@color/black"
-        android:layout_marginHorizontal="25dp"
-        android:layout_marginVertical="300dp"
-        android:text="NUKE ACCOUNT"
-        android:textSize="20sp"/>
-    </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/accountCard"
+            android:layout_width="300dp"
+            android:layout_height="400dp"
+            android:layout_marginHorizontal="55dp"
+            android:layout_marginVertical="55dp">
+
+            <ImageView
+                android:id="@+id/accountProfilePicture"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginHorizontal="75dp"
+                android:layout_marginVertical="50dp"
+                android:background="@drawable/round_profile" />
+            <Button
+                android:id="@+id/logoutButton"
+                android:layout_width="250dp"
+                android:layout_height="75dp"
+                android:backgroundTint="@color/black"
+                android:layout_marginHorizontal="25dp"
+                android:layout_marginVertical="225dp"
+                android:text="LOG OUT"
+                android:textSize="20sp"/>
+            <Button
+                android:id="@+id/nukeAccountButton"
+                android:layout_width="250dp"
+                android:layout_height="75dp"
+                android:backgroundTint="@color/black"
+                android:layout_marginHorizontal="25dp"
+                android:layout_marginVertical="300dp"
+                android:text="NUKE ACCOUNT"
+                android:textSize="20sp"/>
+
+        </androidx.cardview.widget.CardView>
+
+        <ListView
+            android:id="@+id/accountInfoListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/accountCard">
+        </ListView>
+
+    </RelativeLayout>
+
 </FrameLayout>

@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.ListView
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -32,6 +34,19 @@ class AccountFragment : Fragment() {
             auth.signOut()
             startActivity(Intent(activity, LoginActivity::class.java))
         }
+
+        val arrayAdapter: ArrayAdapter<*>
+        val info = mutableListOf<String>()
+
+        // get and append appropriate user data, these are placeholder examples
+        info.add("UID: JohnDoe123")
+        info.add("Best game: 00:00:01, 9 moves")
+        info.add("Latest game: 00:00:02, 10 moves")
+
+        var mListView = view.findViewById<ListView>(R.id.accountInfoListView)
+        arrayAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_list_item_1, info)
+        mListView.adapter = arrayAdapter
+
         return view
     }
 
