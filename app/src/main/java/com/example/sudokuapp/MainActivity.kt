@@ -63,15 +63,22 @@ class MainActivity : AppCompatActivity() {
                 }
                 puzCount += 1
         */
-        val myRef = database.getReference("Puzzles")
-        for(i in 0..<3){
+
+        val levels = mutableMapOf<Level, String>()
+        levels[Level.JUNIOR] = "EASY"
+        levels[Level.MID] = "MID"
+        levels[Level.SENIOR] = "HARD"
+        for(i in 0..<0){
+            val randLevel = Level.values().random()
+            var levelString = levels[randLevel]
+            val myRef = database.getReference("Puzzles").child(levelString!!)
             println("Adding puzzle")
             Log.d("Update: ", "Attempting Add")
-            gameGenerator = SudokuGameGenerator()
+            gameGenerator = SudokuGameGenerator(randLevel)
             Log.d("Update: ", "Puzzle Built")
             val puzzleId = myRef.push().key!!
             val lc = LineConverter()
-            val puzzle = SudokuGameModel(puzzleId, lc.gridToLine(gameGenerator.grid), lc.gridToLine(gameGenerator.solution))
+            val puzzle = SudokuGameModel(puzzleId, levelString,lc.gridToLine(gameGenerator.grid), lc.gridToLine(gameGenerator.solution))
             myRef.child(puzzleId).setValue(puzzle)
                 .addOnSuccessListener{
                     Log.d("Update: ", "Puzzle added")

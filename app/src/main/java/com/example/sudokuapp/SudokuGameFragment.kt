@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.sudokuapp.Cell
 import com.example.sudokuapp.LeaderboardEntryModel
+import com.example.sudokuapp.Level
 import com.example.sudokuapp.LineConverter
 import com.example.sudokuapp.PlaySudokuViewModel
 import com.example.sudokuapp.R
@@ -100,13 +101,23 @@ class SudokuGameFragment : Fragment(), SudokuBoardView.OnTouchListener {
         val today = LocalDate.now().toString()
         var dailyPuzzle: Array<IntArray> = Array(9) { IntArray(9) {0} }
         var dailySolution: Array<IntArray> = Array(9) { IntArray(9) {0}}
+        val levelsR = mutableMapOf<String, Level>()
+        levelsR["EASY"] = Level.JUNIOR
+        levelsR["MID"] = Level.MID
+        levelsR["HARD"] = Level.SENIOR
+        val levels = mutableMapOf<Level, String>()
+        levels[Level.JUNIOR] = "EASY"
+        levels[Level.MID] = "MID"
+        levels[Level.SENIOR] = "HARD"
+        val randLevel = Level.values().random()
+        var levelString = levels[randLevel]
         val database = Firebase.database
-        val myRef = database.getReference("Puzzles")
+        val myRef =  database.getReference("Puzzles").child(levelString!!)
         val puzzleList = myRef.get()
         val lc = LineConverter()
         val newPuzzleId = myRef.push().key!!
         val allPuzzles: MutableList<SudokuGameModel> = mutableListOf<SudokuGameModel>()
-        puzzleList.addOnSuccessListener {d ->
+        puzzleList.addOnSuccessListener { d ->
             for(p in d.children){
                 p.getValue(SudokuGameModel::class.java)?.let { allPuzzles.add(it) }
             }
@@ -118,17 +129,19 @@ class SudokuGameFragment : Fragment(), SudokuBoardView.OnTouchListener {
                     dailySolution = lc.lineToGrid(daily.solution!!)
                     Log.i("puzzle", dailyPuzzle[0][0].toString())
                     Log.i("solution", dailySolution[0][0].toString())
+                    levelString = daily.diff
                 }
 
             }else{
                 Log.e("firebase", "No Puzzles Found")
                 Log.d("Update: ", "Attempting Add")
-                val gameGenerator = SudokuGameGenerator()
+                val gameGenerator = SudokuGameGenerator(randLevel)
                 Log.d("Update: ", "Puzzle Built")
                 dailyPuzzle = gameGenerator.grid
                 dailySolution = gameGenerator.solution
                 val puzzle = SudokuGameModel(
                     newPuzzleId,
+                    levelString,
                     lc.gridToLine(gameGenerator.grid),
                     lc.gridToLine(gameGenerator.solution)
                 )
@@ -154,19 +167,22 @@ class SudokuGameFragment : Fragment(), SudokuBoardView.OnTouchListener {
             runTimer()
             viewModel.sudokuGame.selectedCellLiveData.observe(viewLifecycleOwner, Observer { updateSelectedCellUI(it) })
             viewModel.sudokuGame.cellsLiveData.observe(viewLifecycleOwner, Observer { updateCells(it) })
-        }.addOnFailureListener{
+        }?.addOnFailureListener{
             Log.e("firebase", "No Puzzle Category Found")
             Log.d("Update: ", "Attempting Add")
             val gameGenerator = SudokuGameGenerator()
             Log.d("Update: ", "Puzzle Built")
             val lc = LineConverter()
-            val puzzle = SudokuGameModel(newPuzzleId, lc.gridToLine(gameGenerator.grid), lc.gridToLine(gameGenerator.solution))
-            myRef.child(newPuzzleId).setValue(puzzle)
+            val puzzle = SudokuGameModel(newPuzzleId,levelString, lc.gridToLine(gameGenerator.grid), lc.gridToLine(gameGenerator.solution))
+            myRef.setValue(puzzle)
                 .addOnSuccessListener{
                     Log.d("Update: ", "Puzzle added")
                 }
         }
 
+        val diff:TextView = view.findViewById(R.id.difficultyTab)
+        diff.text = levelString
+        diff.visibility = View.VISIBLE
 
         val buttons = listOf(view.findViewById<Button>(R.id.oneButtonD),
             view.findViewById<Button>(R.id.twoButtonD),
@@ -205,6 +221,8 @@ class SudokuGameFragment : Fragment(), SudokuBoardView.OnTouchListener {
                                 playerModel.highScore = player.highScore
                                 playerModel.lastDay = player.lastDay
                                 minS = playerModel.minTime!!
+                                playerModel.gamesFinished = 1 + player.gamesFinished!!
+                                player.averageTime = ((player.gamesFinished!! * player.averageTime!!) + seconds)/(playerModel.gamesFinished!!)
                             }
 
                         }else{
@@ -215,6 +233,8 @@ class SudokuGameFragment : Fragment(), SudokuBoardView.OnTouchListener {
                             playerModel.userEmail = auth.currentUser?.email
                             playerModel.userId = auth.currentUser?.uid
                             playerModel.highScore = 0
+                            playerModel.gamesFinished = 1
+                            playerModel.averageTime = seconds
                             playerModel.lastDay = "1970-10-10"
                             Log.e("firebase", "No User found in Users")
                         }

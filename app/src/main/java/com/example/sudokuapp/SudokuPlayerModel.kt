@@ -7,4 +7,6 @@ data class SudokuPlayerModel(
     var minMoves: Int? = null,
     var highScore: Int? = 0,
     var dailyStreak: Int? = 0,
+    var gamesFinished: Int? = 0,
+    var averageTime: Int? = 0,
     var lastDay: String? = "1970-10-10")

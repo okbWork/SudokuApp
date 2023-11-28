@@ -2,17 +2,18 @@ package com.example.sudokuapp
 
 import android.content.ContentValues
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class LoginActivity : AppCompatActivity() {
 
@@ -66,6 +67,13 @@ class LoginActivity : AppCompatActivity() {
                     )
                         .addOnCompleteListener(this) { task ->
                             if (task.isSuccessful) {
+                                val database = Firebase.database
+                                val player = SudokuPlayerModel(usernameText.text.toString(),auth.currentUser.toString(),999999,999999,0,0)
+                                val myRef = database.getReference("Users")
+                                myRef.child(auth.currentUser.toString()).setValue(player)
+                                    .addOnSuccessListener{
+                                        Log.d("Update: ", "User Added")
+                                    }
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(ContentValues.TAG, "createUserWithEmail:success")
                                 val user = auth.currentUser

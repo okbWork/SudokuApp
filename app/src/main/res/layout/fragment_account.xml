@@ -6,38 +6,179 @@
     android:layout_height="match_parent"
     tools:context=".AccountFragment"
     android:id="@+id/accountFragment">
-<androidx.cardview.widget.CardView
-    android:id="@+id/accountCard"
-        android:layout_width="300dp"
-        android:layout_height="400dp"
-        android:layout_marginHorizontal="55dp"
-        android:layout_marginVertical="150dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/accountCard"
+            android:layout_width="300dp"
+            android:layout_height="400dp"
+            android:layout_marginHorizontal="55dp"
+            android:layout_marginVertical="55dp">
+
+            <ImageView
+                android:id="@+id/accountProfilePicture"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginHorizontal="75dp"
+                android:layout_marginVertical="50dp"
+                android:background="@drawable/round_profile" />
+            <Button
+                android:id="@+id/logoutButton"
+                android:layout_width="250dp"
+                android:layout_height="75dp"
+                android:backgroundTint="@color/black"
+                android:layout_marginHorizontal="25dp"
+                android:layout_marginVertical="225dp"
+                android:text="LOG OUT"
+                android:textSize="20sp"/>
+            <Button
+                android:id="@+id/nukeAccountButton"
+                android:layout_width="250dp"
+                android:layout_height="75dp"
+                android:backgroundTint="@color/black"
+                android:layout_marginHorizontal="25dp"
+                android:layout_marginVertical="300dp"
+                android:text="EDIT ACCOUNT"
+                android:textSize="20sp"/>
+
+        </androidx.cardview.widget.CardView>
+    <ScrollView
+        android:layout_width="350dp"
+        android:layout_height="250dp"
+        android:layout_marginHorizontal="25dp"
+        android:layout_marginTop="500dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="400dp">
+            <TextView
+                android:id="@+id/minTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fastest Time"
+                android:textSize="20dp"
+                android:textFontWeight="50"/>
+            <TextView
+                android:id="@+id/minMoves"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fewest Moves"
+                android:textSize="20dp"
+                android:textFontWeight="50"
+                android:layout_marginTop="40dp"/>
+            <TextView
+                android:id="@+id/highScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="High Score"
+                android:textSize="20dp"
+                android:textFontWeight="50"
+                android:layout_marginTop="80dp" />
+            <TextView
+                android:id="@+id/dailyStreak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Daily Streak"
+                android:textSize="20dp"
+                android:textFontWeight="50"
+                android:layout_marginTop="120dp" />
+            <TextView
+                android:id="@+id/puzzlesCompleted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Puzzles Completed"
+                android:textSize="20dp"
+                android:textFontWeight="50"
+                android:layout_marginTop="160dp" />
+            <TextView
+                android:id="@+id/averagePuzzleTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Average Puzzle Time"
+                android:textSize="20dp"
+                android:textFontWeight="50"
+                android:layout_marginTop="200dp" />
+
+            <TextView
+                android:id="@+id/lastDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="240dp"
+                android:text="Last Day Puzzle Done"
+                android:textFontWeight="50"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/minTimeVal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9999 secs"
+                android:textSize="20dp"
+                android:textFontWeight="50"
+                android:layout_marginStart="225dp"
+                android:layout_marginTop="0dp"/>
+            <TextView
+                android:id="@+id/minMovesVal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9999 moves"
+                android:textSize="20dp"
+                android:textFontWeight="50"
+                android:layout_marginStart="225dp"
+                android:layout_marginTop="40dp" />
+            <TextView
+                android:id="@+id/highScoreVal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 points"
+                android:textSize="20dp"
+                android:textFontWeight="50"
+                android:layout_marginStart="225dp"
+                android:layout_marginTop="80dp" />
+            <TextView
+                android:id="@+id/dailyStreakVal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 days"
+                android:textSize="20dp"
+                android:textFontWeight="50"
+                android:layout_marginStart="225dp"
+                android:layout_marginTop="120dp"/>
+            <TextView
+                android:id="@+id/puzzlesCompletedVal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 puzzles"
+                android:textSize="20dp"
+                android:textFontWeight="50"
+                android:layout_marginStart="225dp"
+                android:layout_marginTop="160dp" />
+            <TextView
+                android:id="@+id/averagePuzzleTimeVal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 seconds"
+                android:textSize="20dp"
+                android:textFontWeight="50"
+                android:layout_marginStart="225dp"
+                android:layout_marginTop="200dp" />
+            <TextView
+                android:id="@+id/lastDayVal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0/0/0000"
+                android:textSize="20dp"
+                android:textFontWeight="50"
+                android:layout_marginStart="225dp"
+                android:layout_marginTop="240dp"/>
+        </RelativeLayout>
+
+    </ScrollView>
 
 
-    <ImageView
-        android:id="@+id/accountProfilePicture"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginHorizontal="75dp"
-        android:layout_marginVertical="50dp"
-        android:background="@drawable/round_profile" />
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="250dp"
-        android:layout_height="75dp"
-        android:backgroundTint="@color/black"
-        android:layout_marginHorizontal="25dp"
-        android:layout_marginVertical="225dp"
-        android:text="LOG OUT"
-        android:textSize="20sp"/>
-    <Button
-        android:id="@+id/nukeAccountButton"
-        android:layout_width="250dp"
-        android:layout_height="75dp"
-        android:backgroundTint="@color/black"
-        android:layout_marginHorizontal="25dp"
-        android:layout_marginVertical="300dp"
-        android:text="NUKE ACCOUNT"
-        android:textSize="20sp"/>
-    </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
 </FrameLayout>

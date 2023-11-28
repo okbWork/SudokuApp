@@ -90,10 +90,21 @@ class DailySudokuFragment : Fragment() ,SudokuBoardView.OnTouchListener {
         val today = LocalDate.now().toString()
         var dailyPuzzle: Array<IntArray> = Array(9) { IntArray(9) {0} }
         var dailySolution: Array<IntArray> = Array(9) { IntArray(9) {0}}
+        val levelsR = mutableMapOf<String, Level>()
+        levelsR["EASY"] = Level.JUNIOR
+        levelsR["MID"] = Level.MID
+        levelsR["SENIOR"] = Level.SENIOR
+        val levels = mutableMapOf<Level, String>()
+        levels[Level.JUNIOR] = "EASY"
+        levels[Level.MID] = "MID"
+        levels[Level.SENIOR] = "SENIOR"
+        val randLevel = Level.values().random()
+        var levelString = levels[randLevel]
         val database = Firebase.database
         val myRef = database.getReference("DailyPuzzles")
         val dailyPuzzleQ = myRef.child(today).get()
         val lc = LineConverter()
+        val diff: TextView = view.findViewById(R.id.difficultyTab)
         dailyPuzzleQ.addOnSuccessListener {d ->
         if(d.getValue(DailySudokuGameModel::class.java) != null){
             Log.i("firebase", "Found Today's Puzzle")
@@ -103,17 +114,19 @@ class DailySudokuFragment : Fragment() ,SudokuBoardView.OnTouchListener {
                 dailySolution = lc.lineToGrid(daily.solution!!)
                 Log.i("puzzle", dailyPuzzle[0][0].toString())
                 Log.i("solution", dailySolution[0][0].toString())
+                levelString = daily.diff
             }
 
         }else{
             Log.e("firebase", "No Daily Puzzle Found")
             Log.d("Update: ", "Attempting Add")
-            val gameGenerator = SudokuGameGenerator()
+            val gameGenerator = SudokuGameGenerator(randLevel)
             Log.d("Update: ", "Puzzle Built")
             dailyPuzzle = gameGenerator.grid
             dailySolution = gameGenerator.solution
             val puzzle = DailySudokuGameModel(
                 today,
+                levelString,
                 lc.gridToLine(gameGenerator.grid),
                 lc.gridToLine(gameGenerator.solution)
             )
@@ -122,6 +135,8 @@ class DailySudokuFragment : Fragment() ,SudokuBoardView.OnTouchListener {
                     Log.d("Update: ", "Puzzle added")
                 }
         }
+            diff.text = levelString
+            diff.visibility = View.VISIBLE
             val sudokuBoardView = view.findViewById<SudokuBoardView>(R.id.sudokuBoardViewD)
             sudokuBoardView.registerListener(this)
 
@@ -144,10 +159,10 @@ class DailySudokuFragment : Fragment() ,SudokuBoardView.OnTouchListener {
         }.addOnFailureListener{
             Log.e("firebase", "No Daily Puzzle Found Failure")
             Log.d("Update: ", "Attempting Add")
-            val gameGenerator = SudokuGameGenerator()
+            val gameGenerator = SudokuGameGenerator(randLevel)
             Log.d("Update: ", "Puzzle Built")
             val lc = LineConverter()
-            val puzzle = SudokuGameModel(today, lc.gridToLine(gameGenerator.grid), lc.gridToLine(gameGenerator.solution))
+            val puzzle = SudokuGameModel(today,levelString, lc.gridToLine(gameGenerator.grid), lc.gridToLine(gameGenerator.solution))
             myRef.child(today).setValue(puzzle)
                 .addOnSuccessListener{
                     Log.d("Update: ", "Puzzle added")
@@ -198,6 +213,8 @@ class DailySudokuFragment : Fragment() ,SudokuBoardView.OnTouchListener {
                                 playerModel.userEmail = player.userEmail
                                 playerModel.userId = player.userId
                                 playerModel.highScore = player.highScore
+                                playerModel.gamesFinished = 1 + player.gamesFinished!!
+                                player.averageTime = ((player.gamesFinished!! * player.averageTime!!) + seconds)/(playerModel.gamesFinished!!)
                             }
 
                         }else{
@@ -208,6 +225,8 @@ class DailySudokuFragment : Fragment() ,SudokuBoardView.OnTouchListener {
                             playerModel.userEmail = auth.currentUser?.email
                             playerModel.userId = auth.currentUser?.uid
                             playerModel.highScore = 0
+                            playerModel.gamesFinished = 1
+                            playerModel.averageTime = seconds
                             Log.e("firebase", "No User found in Users")
                         }
                         playerModel.lastDay = today
