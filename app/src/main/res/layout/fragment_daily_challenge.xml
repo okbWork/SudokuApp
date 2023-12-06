@@ -7,7 +7,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="650dp"
         android:background="?android:colorBackground"
         tools:context=".view.SudokuGameFragment">
 
@@ -33,7 +33,7 @@
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="2dp"
             android:text="00000 points!"
-            android:textSize="35dp"
+            android:textSize="20dp"
             android:visibility="invisible"/>
 
         <TextView
@@ -42,7 +42,7 @@
             android:layout_height="70dp"
             android:layout_above="@+id/timeTV"
             android:layout_alignParentEnd="true"
-            android:text="0 moves!"
+            android:text="0 moves"
             android:textSize="20dp"
             android:layout_marginEnd="250dp"/>
 
@@ -55,7 +55,7 @@
             android:text="EASY"
             android:textAlignment="center"
             android:textColor="?android:attr/textColorPrimary"
-            android:textSize="45sp"
+            android:textSize="30sp"
             android:visibility="invisible" />
 
         <com.example.sudokuapp.SudokuBoardView

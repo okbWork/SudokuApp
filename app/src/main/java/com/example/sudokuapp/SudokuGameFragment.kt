@@ -204,14 +204,12 @@ class SudokuGameFragment : Fragment(), SudokuBoardView.OnTouchListener {
         buttons.forEachIndexed { index, button ->
             button.setOnClickListener {
                 moves += 1
-                movestv.text = moves.toString() + " moves!"
+                movestv.text = moves.toString() + " moves"
                 viewModel.sudokuGame.handleInput(index + 1)
                 if( viewModel.sudokuGame.isFinished()){
                     stopTimer()
-                    var score = 10000 - (10 * (levelsI[randLevel]!!-17)) -
-                            max(0, seconds-300) -
-                            max(0, 81- levelsI[randLevel]!!-moves)
-                    scoretv.text = score.toString() + " moves!"
+                    var score = 10000 - (10 * (levelsI[randLevel]!! - 17)) - max(0, seconds-300) - max(0, 81- levelsI[randLevel]!!-moves)
+                    scoretv.text = score.toString() + " points!"
                     scoretv.visibility = View.VISIBLE
                     auth = Firebase.auth
                     var minS = seconds
