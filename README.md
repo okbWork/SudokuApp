@@ -6,4 +6,8 @@ Stage 1
 
 Stage 2
 
-<img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ2RjemQ5dXgzcnQ3MWV4dzNkNXN0ZXQxaWw5ZzhmdW5xajVyYnZsbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/CjNMpJEYMniJp5ZtTE/giphy.gif">
+<img src="https://media.giphy.com/media/CjNMpJEYMniJp5ZtTE/giphy.gif">
+
+Stage 3
+
+<img src="https://media.giphy.com/media/2YmU85Mq76Q578c4JL/giphy.gif">
