@@ -19,6 +19,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.time.LocalDate
 import java.util.Locale
+import kotlin.math.max
 
 
 class DailySudokuFragment : Fragment() ,SudokuBoardView.OnTouchListener {
@@ -38,6 +39,8 @@ class DailySudokuFragment : Fragment() ,SudokuBoardView.OnTouchListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_daily_challenge, container, false)
+        val movestv: TextView = view.findViewById(R.id.movesTV)
+        val scoretv: TextView = view.findViewById(R.id.scoreTV)
         fun runTimer() {
 
             // Get the text view.
@@ -98,6 +101,10 @@ class DailySudokuFragment : Fragment() ,SudokuBoardView.OnTouchListener {
         levels[Level.JUNIOR] = "EASY"
         levels[Level.MID] = "MID"
         levels[Level.SENIOR] = "SENIOR"
+        val levelsI = mutableMapOf<Level, Int>()
+        levelsI[Level.JUNIOR] = 80
+        levelsI[Level.MID] = 20
+        levelsI[Level.SENIOR] = 17
         val randLevel = Level.values().random()
         var levelString = levels[randLevel]
         val database = Firebase.database
@@ -181,12 +188,18 @@ class DailySudokuFragment : Fragment() ,SudokuBoardView.OnTouchListener {
         buttons.forEachIndexed { index, button ->
             button.setOnClickListener {
                 moves += 1
+                movestv.text = moves.toString() + " moves!"
                 viewModel.sudokuGame.handleInput(index + 1)
                 if( viewModel.sudokuGame.isFinished()){
                     stopTimer()
+                    var score = 10000 - (10 * (levelsI[randLevel]!!-17)) -
+                            max(0, seconds-300) -
+                            max(0, 81- levelsI[randLevel]!!-moves)
+                    scoretv.text = score.toString() + " moves!"
+                    scoretv.visibility = View.VISIBLE
                     auth = Firebase.auth
-                    val leaderboardEntryModel = LeaderboardEntryModel(auth.currentUser?.uid, seconds, moves)
-                    val playerModel = SudokuPlayerModel()
+                    val leaderboardEntryModel = LeaderboardEntryModel(auth.currentUser?.uid,score, seconds, moves)
+                    var playerModel = SudokuPlayerModel()
                     val puzzleLeaderBoard = database.getReference("DailyLeaderboard")
                     auth.currentUser?.let { it1 ->
                             puzzleLeaderBoard.child(today).child(it1.uid).setValue(leaderboardEntryModel).addOnSuccessListener {
@@ -200,6 +213,7 @@ class DailySudokuFragment : Fragment() ,SudokuBoardView.OnTouchListener {
                             Log.i("firebase", "Found Player in Users")
                             var player = d.getValue(SudokuPlayerModel::class.java)
                             if (player != null) {
+                                playerModel = player
                                 if(LocalDate.now().toString() == player.lastDay){
                                     playerModel.dailyStreak = player.dailyStreak
                                 }else if (LocalDate.now().plusDays(1).toString() == player.lastDay){
@@ -207,12 +221,6 @@ class DailySudokuFragment : Fragment() ,SudokuBoardView.OnTouchListener {
                                 }else{
                                     playerModel.dailyStreak = 1
                                 }
-                                playerModel.highScore = player.highScore
-                                playerModel.minMoves = player.minMoves
-                                playerModel.minTime = player.minTime
-                                playerModel.userEmail = player.userEmail
-                                playerModel.userId = player.userId
-                                playerModel.highScore = player.highScore
                                 playerModel.gamesFinished = 1 + player.gamesFinished!!
                                 player.averageTime = ((player.gamesFinished!! * player.averageTime!!) + seconds)/(playerModel.gamesFinished!!)
                             }

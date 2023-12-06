@@ -92,8 +92,8 @@ class MainActivity : AppCompatActivity() {
 
 
         val bottomNavigationBar: BottomNavigationView = findViewById(R.id.bottom_navigation)
-        bottomNavigationBar.selectedItemId = R.id.LeaderboardFragmentIcon
-        replaceFragment(LeaderboardFragment())
+        bottomNavigationBar.selectedItemId = R.id.AccountFragmentIcon
+        replaceFragment(AccountFragment())
         bottomNavigationBar.setOnItemSelectedListener { item ->
             lateinit var fragment: Fragment
             when (item.itemId) {

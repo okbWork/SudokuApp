@@ -1,7 +1,9 @@
 package com.example.sudokuapp
 
 data class SudokuPlayerModel(
+    var username: String? = null,
     var userEmail:String? = null,
+    var pfpPath: String? = "pfps/defaultPfp.jpg",
     var userId: String? = null,
     var minTime: Int? = null,
     var minMoves: Int? = null,

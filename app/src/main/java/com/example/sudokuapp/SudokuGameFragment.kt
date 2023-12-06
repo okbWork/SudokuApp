@@ -28,6 +28,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.time.LocalDate
 import java.util.Locale
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -49,6 +50,8 @@ class SudokuGameFragment : Fragment(), SudokuBoardView.OnTouchListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_daily_challenge, container, false)
+        val movestv: TextView = view.findViewById(R.id.movesTV)
+        val scoretv: TextView = view.findViewById(R.id.scoreTV)
         fun runTimer() {
 
             // Get the text view.
@@ -109,6 +112,10 @@ class SudokuGameFragment : Fragment(), SudokuBoardView.OnTouchListener {
         levels[Level.JUNIOR] = "EASY"
         levels[Level.MID] = "MID"
         levels[Level.SENIOR] = "HARD"
+        val levelsI = mutableMapOf<Level, Int>()
+        levelsI[Level.JUNIOR] = 80
+        levelsI[Level.MID] = 20
+        levelsI[Level.SENIOR] = 17
         val randLevel = Level.values().random()
         var levelString = levels[randLevel]
         val database = Firebase.database
@@ -197,13 +204,19 @@ class SudokuGameFragment : Fragment(), SudokuBoardView.OnTouchListener {
         buttons.forEachIndexed { index, button ->
             button.setOnClickListener {
                 moves += 1
+                movestv.text = moves.toString() + " moves!"
                 viewModel.sudokuGame.handleInput(index + 1)
                 if( viewModel.sudokuGame.isFinished()){
                     stopTimer()
+                    var score = 10000 - (10 * (levelsI[randLevel]!!-17)) -
+                            max(0, seconds-300) -
+                            max(0, 81- levelsI[randLevel]!!-moves)
+                    scoretv.text = score.toString() + " moves!"
+                    scoretv.visibility = View.VISIBLE
                     auth = Firebase.auth
                     var minS = seconds
                     var minM = moves
-                    val playerModel = SudokuPlayerModel()
+                    var playerModel = SudokuPlayerModel()
                     val puzzleLeaderBoard = database.getReference("Leaderboard")
                     val updateUserRef = database.getReference("Users")
                     val currentUser = auth.currentUser?.let { it1 -> updateUserRef.child(it1.uid).get() }
@@ -212,14 +225,10 @@ class SudokuGameFragment : Fragment(), SudokuBoardView.OnTouchListener {
                             Log.i("firebase", "Found Player in Users")
                             var player = d.getValue(SudokuPlayerModel::class.java)
                             if (player != null) {
-                                playerModel.dailyStreak = player.dailyStreak
-                                playerModel.highScore = player.highScore
+                                playerModel = player
+                                playerModel.highScore = max(score, player.highScore!!)
                                 playerModel.minMoves = min(moves, player.minMoves!!)
                                 playerModel.minTime = min(seconds, player.minTime!!)
-                                playerModel.userEmail = player.userEmail
-                                playerModel.userId = player.userId
-                                playerModel.highScore = player.highScore
-                                playerModel.lastDay = player.lastDay
                                 minS = playerModel.minTime!!
                                 playerModel.gamesFinished = 1 + player.gamesFinished!!
                                 player.averageTime = ((player.gamesFinished!! * player.averageTime!!) + seconds)/(playerModel.gamesFinished!!)
@@ -227,7 +236,7 @@ class SudokuGameFragment : Fragment(), SudokuBoardView.OnTouchListener {
 
                         }else{
                             playerModel.dailyStreak = 1
-                            playerModel.highScore = 0
+                            playerModel.highScore = score
                             playerModel.minMoves = moves
                             playerModel.minTime = seconds
                             playerModel.userEmail = auth.currentUser?.email
@@ -245,7 +254,7 @@ class SudokuGameFragment : Fragment(), SudokuBoardView.OnTouchListener {
                                 }
                         }
                     }
-                    val leaderboardEntryModel = LeaderboardEntryModel(auth.currentUser?.uid, minS, minM)
+                    val leaderboardEntryModel = LeaderboardEntryModel(auth.currentUser?.uid, score, minS, minM)
                     auth.currentUser?.let { it1 ->
                         puzzleLeaderBoard.child(it1.uid).setValue(leaderboardEntryModel).addOnSuccessListener {
                             Log.d("Update: ", "Score Added to Leaderboard")

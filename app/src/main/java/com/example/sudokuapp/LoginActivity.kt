@@ -68,7 +68,7 @@ class LoginActivity : AppCompatActivity() {
                         .addOnCompleteListener(this) { task ->
                             if (task.isSuccessful) {
                                 val database = Firebase.database
-                                val player = SudokuPlayerModel(usernameText.text.toString(),auth.currentUser.toString(),999999,999999,0,0)
+                                val player = SudokuPlayerModel(usernameText.text.toString(),usernameText.text.toString(),"pfps/defaultPfp.jpg",auth.currentUser.toString(),999999,999999,0,0)
                                 val myRef = database.getReference("Users")
                                 myRef.child(auth.currentUser.toString()).setValue(player)
                                     .addOnSuccessListener{
